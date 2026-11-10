@@ -1,0 +1,6 @@
+fastapi
+uvicorn
+asyncssh
+aiogram
+aiohttp
+psutil
