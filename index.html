@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRIME HOSTING - Telegram Bot Hosting Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#090d16',
+                        cardBg: '#111827',
+                        neonBlue: '#00f2fe',
+                        neonPurple: '#7f00ff',
+                        neonGreen: '#00ff87'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #090d16; color: #ffffff; font-family: 'Inter', sans-serif; }
+        .glass-card { background: linear-gradient(135deg, rgba(17, 24, 39, 0.8) 0%, rgba(13, 18, 30, 0.9) 100%); border: 1px solid rgba(255, 255, 255, 0.08); backdrop-filter: blur(10px); }
+    </style>
+</head>
+<body class="flex h-screen bg-darkBg text-white">
+
+    <!-- SIDEBAR -->
+    <aside class="w-64 bg-[#0d121f] border-r border-[#1f293d] flex flex-col justify-between hidden md:flex z-20">
+        <div>
+            <div class="p-6 flex items-center space-x-3 border-b border-[#1f293d]">
+                <i class="fa-solid fa-cloud text-3xl text-cyan-400"></i>
+                <div>
+                    <h1 class="font-extrabold text-lg tracking-wider bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">PRIME HOSTING</h1>
+                    <p class="text-[10px] text-gray-400">Host • Manage • Grow</p>
+                </div>
+            </div>
+            <nav class="p-4 space-y-1.5 text-sm">
+                <a href="#dashboard" onclick="switchTab('dashboard')" id="nav-dashboard" class="flex items-center space-x-3 px-4 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-medium shadow-lg"><i class="fa-solid fa-house w-5"></i><span>Dashboard</span></a>
+                <a href="#upload" onclick="switchTab('upload')" id="nav-upload" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-gray-800/50 transition"><i class="fa-solid fa-cloud-arrow-up w-5 text-cyan-400"></i><span>Upload Bot</span></a>
+                <a href="#bots" onclick="switchTab('bots')" id="nav-bots" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-gray-800/50 transition"><i class="fa-solid fa-robot w-5 text-purple-400"></i><span>My Bots</span></a>
+                <a href="#logs" onclick="switchTab('logs')" id="nav-logs" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-gray-800/50 transition"><i class="fa-solid fa-file-lines w-5 text-yellow-400"></i><span>Logs</span></a>
+            </nav>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <div class="flex-1 flex flex-col h-screen overflow-y-auto">
+        <header class="h-20 border-b border-[#1f293d] bg-[#0d121f]/80 px-8 flex items-center justify-between sticky top-0 z-10">
+            <div class="flex items-center space-x-2 bg-gray-900/60 px-4 py-2 rounded-full border border-gray-800 text-xs">
+                <span class="w-3 h-3 rounded-full bg-green-500 animate-pulse"></span>
+                <span class="text-gray-300 font-semibold">Server Online | Uptime: 99.9%</span>
+            </div>
+            <div class="flex items-center space-x-3 bg-gray-900/60 border border-gray-800 px-3 py-1.5 rounded-full">
+                <i class="fa-solid fa-user-astronaut text-cyan-400"></i>
+                <span class="text-xs font-bold">Admin Panel</span>
+            </div>
+        </header>
+
+        <main class="p-8 max-w-7xl mx-auto w-full space-y-8">
+            <!-- DASHBOARD TAB -->
+            <div id="view-dashboard" class="tab-content space-y-6">
+                <div class="rounded-3xl bg-gradient-to-r from-blue-900/50 via-indigo-900/40 to-purple-900/50 border border-cyan-500/30 p-8">
+                    <h2 class="text-3xl font-extrabold bg-gradient-to-r from-white via-cyan-200 to-cyan-400 bg-clip-text text-transparent">Welcome to Telegram Bot Hosting</h2>
+                    <p class="text-gray-300 text-sm mt-2">Apni Python bot ki `.py` file upload karein aur 24/7 bina ruke live rakhein[span_4](start_span)[span_4](end_span).</p>
+                    <button onclick="switchTab('upload')" class="mt-4 px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-600 text-black font-bold text-sm shadow-lg">Upload Bot Now</button>
+                </div>
+            </div>
+
+            <!-- UPLOAD TAB -->
+            <div id="view-upload" class="tab-content hidden space-y-6">
+                <div class="glass-card rounded-3xl p-8 max-w-xl mx-auto">
+                    <h2 class="text-2xl font-bold mb-4">Upload Telegram Bot (.py)</h2>
+                    <form onsubmit="uploadBot(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-xs text-gray-400 mb-1">Bot Name</label>
+                            <input type="text" id="botName" placeholder="MyTelegramBot" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-cyan-400" required>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-400 mb-1">Python Script (.py file)</label>
+                            <input type="file" id="botFile" accept=".py" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-sm" required>
+                        </div>
+                        <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-600 text-black font-bold text-sm">Deploy Bot</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- BOTS TAB -->
+            <div id="view-bots" class="tab-content hidden space-y-6">
+                <h2 class="text-2xl font-bold">Hosted Bots</h2>
+                <div id="botsList" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Dynamic Bots -->
+                </div>
+            </div>
+
+            <!-- LOGS TAB -->
+            <div id="view-logs" class="tab-content hidden space-y-6">
+                <h2 class="text-2xl font-bold">Live Logs</h2>
+                <div class="glass-card rounded-3xl p-6 bg-black/60 font-mono text-xs text-green-400 h-80 overflow-y-auto" id="terminalLogs">
+                    [System] Ready for bot execution...<br>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById('view-' + tabId).classList.remove('hidden');
+        }
+
+        async function uploadBot(e) {
+            e.preventDefault();
+            let formData = new FormData();
+            formData.append('file', document.getElementById('botFile').files[0]);
+            formData.append('bot_name', document.getElementById('botName').value);
+
+            let res = await fetch('/api/upload-bot', { method: 'POST', body: formData });
+            let data = await res.json();
+            alert(data.message);
+            switchTab('bots');
+            loadBots();
+        }
+
+        async function loadBots() {
+            let res = await fetch('/api/bots');
+            let bots = await res.json();
+            let container = document.getElementById('botsList');
+            container.innerHTML = bots.map(b => `
+                <div class="glass-card p-4 rounded-2xl flex justify-between items-center">
+                    <div>
+                        <h4 class="font-bold">${b.name}</h4>
+                        <span class="text-xs text-green-400">● Running</span>
+                    </div>
+                    <button onclick="alert('Bot is active!')" class="px-3 py-1 bg-red-500/20 text-red-400 text-xs rounded-lg font-bold">Stop</button>
+                </div>
+            `).join('');
+        }
+    </script>
+</body>
+</html>
